@@ -23,11 +23,11 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
  */
 class ElasticSearchRepository implements Repository
 {
-    private $client;
-    private $serializer;
-    private $index;
-    private $class;
-    private $notAnalyzedFields;
+    protected $client;
+    protected $serializer;
+    protected $index;
+    protected $class;
+    protected $notAnalyzedFields;
 
     public function __construct(
         Client $client,
@@ -119,7 +119,7 @@ class ElasticSearchRepository implements Repository
         }
     }
 
-    private function searchAndDeserializeHits(array $query)
+    protected function searchAndDeserializeHits(array $query)
     {
         try {
             $result = $this->client->search($query);
@@ -165,7 +165,7 @@ class ElasticSearchRepository implements Repository
         );
     }
 
-    private function buildFindByQuery(array $fields): array
+    protected function buildFindByQuery(array $fields): array
     {
         return [
             'bool' => [
@@ -174,14 +174,14 @@ class ElasticSearchRepository implements Repository
         ];
     }
 
-    private function buildFindAllQuery(): array
+    protected function buildFindAllQuery(): array
     {
         return [
             'match_all' => new \stdClass(),
         ];
     }
 
-    private function deserializeHit(array $hit)
+    protected function deserializeHit(array $hit)
     {
         return $this->serializer->deserialize(
             [
@@ -191,12 +191,12 @@ class ElasticSearchRepository implements Repository
         );
     }
 
-    private function deserializeHits(array $hits)
+    protected function deserializeHits(array $hits)
     {
         return array_map([$this, 'deserializeHit'], $hits);
     }
 
-    private function buildFilter(array $filter)
+    protected function buildFilter(array $filter)
     {
         $retval = [];
 
@@ -248,7 +248,7 @@ class ElasticSearchRepository implements Repository
      *
      * @return True, if the index was successfully deleted
      */
-    public function deleteIndex(): bool
+    protected function deleteIndex(): bool
     {
         $indexParams = [
             'index'   => $this->index,
@@ -266,7 +266,7 @@ class ElasticSearchRepository implements Repository
         return isset($response['status']) && $response['status'] !== 'red';
     }
 
-    private function createNotAnalyzedFieldsMapping(array $notAnalyzedFields): array
+    protected function createNotAnalyzedFieldsMapping(array $notAnalyzedFields): array
     {
         $fields = [];
 
