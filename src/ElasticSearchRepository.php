@@ -46,7 +46,7 @@ class ElasticSearchRepository implements Repository
     /**
      * {@inheritDoc}
      */
-    public function save(Identifiable $data)
+    public function save(Identifiable $data): void
     {
         Assertion::isInstanceOf($data, $this->class);
 
@@ -61,6 +61,7 @@ class ElasticSearchRepository implements Repository
         ];
 
         $this->client->index($params);
+        return;
     }
 
     /**
